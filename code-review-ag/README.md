@@ -1,26 +1,26 @@
 ## Code Review Audit
 
-* [] [code-review/Owned.md](code-review/Owned.md)
-  * [] contract Owned
-* [] [code-review/Operated.md](code-review/Operated.md)
-  * [] contract Operated is Owned
-* [] [code-review/SafeMath.md](code-review/SafeMath.md)
-  * [] library SafeMath
-* [] [code-review/ERC20Interface.md](code-review/ERC20Interface.md)
-  * [] contract ERC20Interface
-* [] [code-review/BonusListInterface.md](code-review/BonusListInterface.md)
-  * [] contract BonusListInterface
-* [] [code-review/BonusList.md](code-review/BonusList.md)
-  * [] contract BonusList is BonusListInterface, Operated
-* [] [code-review/PriceFeedInterface.md](code-review/PriceFeedInterface.md)
-  * [] contract PriceFeedInterface
-* [] [code-review/PriceFeed.md](code-review/PriceFeed.md)
-  * [] contract PriceFeed is Operated
-* [] [code-review/MakerDAOETHUSDPriceFeedSimulator.md](code-review/MakerDAOETHUSDPriceFeedSimulator.md)
-  * [] contract MakerDAOETHUSDPriceFeedSimulator is Owned
-* [] [code-review/MakerDAOPriceFeedAdaptor.md](code-review/MakerDAOPriceFeedAdaptor.md)
-  * [] contract MakerDAOPriceFeedInterface
-  * [] contract MakerDAOPriceFeedAdaptor is PriceFeedInterface
-* [] [code-review/FxxxLandRush.md](code-review/FxxxLandRush.md)
-  * [] contract FxxxLandRush is Owned, ApproveAndCallFallBack
-    * [] using SafeMath for uint;
+* [x] [code-review/Owned.md](code-review/Owned.md)
+  * [x] contract Owned
+* [x] [code-review/Operated.md](code-review/Operated.md)
+  * [x] contract Operated is Owned
+* [x] [code-review/SafeMath.md](code-review/SafeMath.md)
+  * [x] library SafeMath
+* [x] [code-review/ERC20Interface.md](code-review/ERC20Interface.md)
+  * [x] contract ERC20Interface
+* [x] [code-review/BonusListInterface.md](code-review/BonusListInterface.md)
+  * [x] contract BonusListInterface
+* [x] [code-review/BonusList.md](code-review/BonusList.md)
+  * [x] contract BonusList is BonusListInterface, Operated
+* [x] [code-review/PriceFeedInterface.md](code-review/PriceFeedInterface.md)
+  * [x] contract PriceFeedInterface
+* [x] [code-review/PriceFeed.md](code-review/PriceFeed.md)
+  * [x] contract PriceFeed is Operated
+* [x] [code-review/MakerDAOETHUSDPriceFeedSimulator.md](code-review/MakerDAOETHUSDPriceFeedSimulator.md)
+  * [x] contract MakerDAOETHUSDPriceFeedSimulator is Owned
+* [x] [code-review/MakerDAOPriceFeedAdaptor.md](code-review/MakerDAOPriceFeedAdaptor.md)
+  * [x] contract MakerDAOPriceFeedInterface
+  * [x] contract MakerDAOPriceFeedAdaptor is PriceFeedInterface
+* [x] [code-review/FxxxLandRush.md](code-review/FxxxLandRush.md)
+  * [x] contract FxxxLandRush is Owned, ApproveAndCallFallBack
+    * [x] using SafeMath for uint;
