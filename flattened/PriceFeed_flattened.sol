@@ -1,11 +1,11 @@
 pragma solidity ^0.4.25;
 
 // ----------------------------------------------------------------------------
-// GazeCoin FxxxLandRush Bonus List
+// BokkyPooBah's Pricefeed from a single source
 //
-// Enjoy.
+// Deployed to: 0x4604646C55410EAa6Cf43b04d26071E36bC227Ef
 //
-// (c) BokkyPooBah / Bok Consulting Pty Ltd for GazeCoin 2018. The MIT Licence.
+// Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 
 
@@ -45,8 +45,10 @@ contract Owned {
     }
 }
 
+
 // ----------------------------------------------------------------------------
-// Operated
+// Maintain a list of operators that are permissioned to execute certain
+// functions
 // ----------------------------------------------------------------------------
 contract Operated is Owned {
     mapping(address => bool) public operators;
@@ -75,47 +77,36 @@ contract Operated is Owned {
 }
 
 // ----------------------------------------------------------------------------
-// Bonus List interface
+// PriceFeed Interface - _live is true if the rate is valid, false if invalid
 // ----------------------------------------------------------------------------
-contract BonusListInterface {
-    function isInBonusList(address account) public view returns (bool);
+contract PriceFeedInterface {
+    function getRate() public view returns (uint _rate, bool _live);
 }
 
 
 // ----------------------------------------------------------------------------
-// Bonus List - on list or not
+// Pricefeed from a single source
 // ----------------------------------------------------------------------------
-contract BonusList is BonusListInterface, Operated {
-    mapping(address => bool) public bonusList;
+contract PriceFeed is PriceFeedInterface, Operated {
+    string public name;
+    uint public rate;
+    bool public live;
 
-    event AccountListed(address indexed account, bool status);
+    event SetRate(uint oldRate, bool oldLive, uint newRate, bool newLive);
 
-    constructor() public {
+    constructor(string _name, uint _rate, bool _live) public {
         initOperated(msg.sender);
+        name = _name;
+        rate = _rate;
+        live = _live;
+        emit SetRate(0, false, rate, live);
     }
-
-    function isInBonusList(address account) public view returns (bool) {
-        return bonusList[account];
+    function setRate(uint _rate, bool _live) public onlyOperator {
+        emit SetRate(rate, live, _rate, _live);
+        rate = _rate;
+        live = _live;
     }
-
-    function add(address[] accounts) public onlyOperator {
-        require(accounts.length != 0);
-        for (uint i = 0; i < accounts.length; i++) {
-            require(accounts[i] != address(0));
-            if (!bonusList[accounts[i]]) {
-                bonusList[accounts[i]] = true;
-                emit AccountListed(accounts[i], true);
-            }
-        }
-    }
-    function remove(address[] accounts) public onlyOperator {
-        require(accounts.length != 0);
-        for (uint i = 0; i < accounts.length; i++) {
-            require(accounts[i] != address(0));
-            if (bonusList[accounts[i]]) {
-                delete bonusList[accounts[i]];
-                emit AccountListed(accounts[i], false);
-            }
-        }
+    function getRate() public view returns (uint _rate, bool _live) {
+        return (rate, live);
     }
 }

@@ -1,41 +1,40 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.25;
 
 // ----------------------------------------------------------------------------
-// BokkyPooBah's Pricefeed compatible with MakerDAO's "pip" PriceFeed
+// BokkyPooBah's Pricefeed from a single source
 //
-// Used to simulate the MakerDAO ETH/USD pricefeed on the Ethereum mainnet at
-//   https://etherscan.io/address/0x729D19f657BD0614b4985Cf1D82531c67569197B
-// Used as a manual feed for GZE/ETH
-//
+// Deployed to: 0x4604646C55410EAa6Cf43b04d26071E36bC227Ef
 //
 // Enjoy. (c) BokkyPooBah / Bok Consulting Pty Ltd 2018. The MIT Licence.
 // ----------------------------------------------------------------------------
 
 import "Operated.sol";
+import "PriceFeedInterface.sol";
 
 
 // ----------------------------------------------------------------------------
-// Pricefeed with interface compatible with MakerDAO's "pip" PriceFeed
+// Pricefeed from a single source
 // ----------------------------------------------------------------------------
-contract PriceFeed is Operated {
-    uint public value;
-    bool public hasValue;
+contract PriceFeed is PriceFeedInterface, Operated {
+    string public name;
+    uint public rate;
+    bool public live;
 
-    event SetValue(uint oldValue, bool oldHasValue, uint newValue, bool newHasValue);
+    event SetRate(uint oldRate, bool oldLive, uint newRate, bool newLive);
 
-    constructor(uint _value, bool _hasValue) public {
+    constructor(string _name, uint _rate, bool _live) public {
         initOperated(msg.sender);
-        value = _value;
-        hasValue = _hasValue;
-        emit SetValue(0, false, value, hasValue);
+        name = _name;
+        rate = _rate;
+        live = _live;
+        emit SetRate(0, false, rate, live);
     }
-    function setValue(uint _value, bool _hasValue) public onlyOperator {
-        emit SetValue(value, hasValue, _value, _hasValue);
-        value = _value;
-        hasValue = _hasValue;
+    function setRate(uint _rate, bool _live) public onlyOperator {
+        emit SetRate(rate, live, _rate, _live);
+        rate = _rate;
+        live = _live;
     }
-    function peek() public view returns (bytes32 _value, bool _hasValue) {
-        _value = bytes32(value);
-        _hasValue = hasValue;
+    function getRate() public view returns (uint _rate, bool _live) {
+        return (rate, live);
     }
 }

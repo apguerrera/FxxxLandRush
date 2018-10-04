@@ -449,27 +449,29 @@ function printEthUsdPriceFeedContractDetails() {
   console.log("RESULT: ethUsdPriceFeedContract.address=" + getShortAddressName(ethUsdPriceFeedContractAddress));
   if (ethUsdPriceFeedContractAddress != null && ethUsdPriceFeedContractAbi != null) {
     var contract = eth.contract(ethUsdPriceFeedContractAbi).at(ethUsdPriceFeedContractAddress);
-    console.log("RESULT: ethUsdPriceFeed.owner/new=" + getShortAddressName(contract.owner()) + "/" + getShortAddressName(contract.newOwner()));
-    console.log("RESULT: ethUsdPriceFeed.value=" + contract.value().shift(-18));
-    console.log("RESULT: ethUsdPriceFeed.hasValue=" + contract.hasValue());
+    // console.log("RESULT: ethUsdPriceFeed.owner/new=" + getShortAddressName(contract.owner()) + "/" + getShortAddressName(contract.newOwner()));
+    console.log("RESULT: ethUsdPriceFeed.makerDAOPriceFeed=" + getShortAddressName(contract.makerDAOPriceFeed()));
+    var rate = contract.getRate();
+    console.log("RESULT: ethUsdPriceFeed.ethUsd=" + rate[0].shift(-18) + " " + rate[1]);
 
     var i;
     var latestBlock = eth.blockNumber;
 
-    var ownershipTransferredEvents = contract.OwnershipTransferred({}, { fromBlock: ethUsdPriceFeedFromBlock, toBlock: latestBlock });
-    i = 0;
-    ownershipTransferredEvents.watch(function (error, result) {
-      console.log("RESULT: OwnershipTransferred " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
-    });
-    ownershipTransferredEvents.stopWatching();
-
-    var setValueEvents = contract.SetValue({}, { fromBlock: ethUsdPriceFeedFromBlock, toBlock: latestBlock });
-    i = 0;
-    setValueEvents.watch(function (error, result) {
-      console.log("RESULT: SetValue " + i++ + " #" + result.blockNumber + " value=" + result.args.value.shift(-18) +
-        " hasValue=" + result.args.hasValue);
-    });
-    setValueEvents.stopWatching();
+    // var ownershipTransferredEvents = contract.OwnershipTransferred({}, { fromBlock: ethUsdPriceFeedFromBlock, toBlock: latestBlock });
+    // i = 0;
+    // ownershipTransferredEvents.watch(function (error, result) {
+    //   console.log("RESULT: OwnershipTransferred " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    // });
+    // ownershipTransferredEvents.stopWatching();
+    //
+    // var setRateEvents = contract.SetRate({}, { fromBlock: ethUsdPriceFeedFromBlock, toBlock: latestBlock });
+    // i = 0;
+    // setRateEvents.watch(function (error, result) {
+    //   console.log("RESULT: SetRate " + i++ + " #" + result.blockNumber + " oldRate=" + result.args.oldRate.shift(-18) +
+    //     " oldLive=" + result.args.oldLive + " newRate=" + result.args.newRate.shift(-18) +
+    //     " newLive=" + result.args.newLive);
+    // });
+    // setRateEvents.stopWatching();
 
     ethUsdPriceFeedFromBlock = latestBlock + 1;
   }
@@ -494,8 +496,9 @@ function printGzeEthPriceFeedContractDetails() {
   if (gzeEthPriceFeedContractAddress != null && gzeEthPriceFeedContractAbi != null) {
     var contract = eth.contract(gzeEthPriceFeedContractAbi).at(gzeEthPriceFeedContractAddress);
     console.log("RESULT: gzeEthPriceFeed.owner/new=" + getShortAddressName(contract.owner()) + "/" + getShortAddressName(contract.newOwner()));
-    console.log("RESULT: gzeEthPriceFeed.value=" + contract.value().shift(-18));
-    console.log("RESULT: gzeEthPriceFeed.hasValue=" + contract.hasValue());
+    console.log("RESULT: gzeEthPriceFeed.name=" + contract.name());
+    console.log("RESULT: gzeEthPriceFeed.rate=" + contract.rate().shift(-18));
+    console.log("RESULT: gzeEthPriceFeed.live=" + contract.live());
 
     var i;
     var latestBlock = eth.blockNumber;
@@ -521,13 +524,14 @@ function printGzeEthPriceFeedContractDetails() {
     });
     operatorRemovedEvents.stopWatching();
 
-    var setValueEvents = contract.SetValue({}, { fromBlock: gzeEthPriceFeedFromBlock, toBlock: latestBlock });
+    var setRateEvents = contract.SetRate({}, { fromBlock: gzeEthPriceFeedFromBlock, toBlock: latestBlock });
     i = 0;
-    setValueEvents.watch(function (error, result) {
-      console.log("RESULT: SetValue " + i++ + " #" + result.blockNumber + " value=" + result.args.value.shift(-18) +
-        " hasValue=" + result.args.hasValue);
+    setRateEvents.watch(function (error, result) {
+      console.log("RESULT: SetRate " + i++ + " #" + result.blockNumber + " oldRate=" + result.args.oldRate.shift(-18) +
+        " oldLive=" + result.args.oldLive + " newRate=" + result.args.newRate.shift(-18) +
+        " newLive=" + result.args.newLive);
     });
-    setValueEvents.stopWatching();
+    setRateEvents.stopWatching();
 
     gzeEthPriceFeedFromBlock = latestBlock + 1;
   }
@@ -622,6 +626,7 @@ function printLandRushContractDetails() {
     console.log("RESULT: landRush.endDate=" + new Date(contract.endDate() * 1000).toString());
     console.log("RESULT: landRush.maxParcels=" + contract.maxParcels());
     console.log("RESULT: landRush.parcelUsd=" + contract.parcelUsd().shift(-18));
+    console.log("RESULT: landRush.usdLockAccountThreshold=" + contract.usdLockAccountThreshold().shift(-18));
     console.log("RESULT: landRush.gzeBonusOffList=" + contract.gzeBonusOffList());
     console.log("RESULT: landRush.gzeBonusOnList=" + contract.gzeBonusOnList());
     console.log("RESULT: landRush.parcelsSold=" + contract.parcelsSold());
@@ -689,6 +694,13 @@ function printLandRushContractDetails() {
     });
     parcelUsdUpdatedEvents.stopWatching();
 
+    var usdLockAccountThresholdUpdatedEvents = contract.UsdLockAccountThresholdUpdated({}, { fromBlock: landRushFromBlock, toBlock: latestBlock });
+    i = 0;
+    usdLockAccountThresholdUpdatedEvents.watch(function (error, result) {
+      console.log("RESULT: UsdLockAccountThresholdUpdated " + i++ + " #" + result.blockNumber + " " + JSON.stringify(result.args));
+    });
+    usdLockAccountThresholdUpdatedEvents.stopWatching();
+
     var gzeBonusOffListUpdatedEvents = contract.GzeBonusOffListUpdated({}, { fromBlock: landRushFromBlock, toBlock: latestBlock });
     i = 0;
     gzeBonusOffListUpdatedEvents.watch(function (error, result) {
@@ -709,7 +721,8 @@ function printLandRushContractDetails() {
       console.log("RESULT: Purchased " + i++ + " #" + result.blockNumber + " addr=" + result.args.addr + " parcels=" + result.args.parcels +
         " gzeToTransfer=" + result.args.gzeToTransfer.shift(-18) + " ethToTransfer=" + result.args.ethToTransfer.shift(-18) +
         " parcelsSold=" + result.args.parcelsSold +
-        " contributedGze=" + result.args.contributedGze.shift(-18) + " contributedEth=" + result.args.contributedEth.shift(-18));
+        " contributedGze=" + result.args.contributedGze.shift(-18) + " contributedEth=" + result.args.contributedEth.shift(-18) +
+        " lockAccount=" + result.args.lockAccount);
     });
     purchasedEvents.stopWatching();
 
